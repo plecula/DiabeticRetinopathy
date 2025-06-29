@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rethynopathy analizys</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  
+
+</head>
+<body>
+ <header class="main-header">
+  <img id="menuIcon" onclick="toggleMenu()" src="{{ url_for('static', filename='IMG/burger.svg') }}" alt="menu" class="icon">
+
+  <div class="header-buttons">
+    <img src="{{ url_for('static', filename='IMG/account.svg') }}" alt="Logo konta" class="logo-icon">
+    <button class="btn">Zaloguj się</button>
+    <button class="btn btn-outline">Zarejestruj się</button>
+  </div>
+
+</header>
+
+
+<div class="menu-overlay" id="menu">
+    <div class="menu-content">
+      <div class="menu-close" onclick="toggleMenu()">&times;</div>
+        <a href="upload.html">DODAJ ZDJĘCIE DO ANALIZY</a>
+        <a href="account.html">MOJE KONTO</a>
+        <a href="login.html">ZALOGUJ SIĘ</a>
+          </div>
+  </div>
+
+ <main>
+    <section class="hero">
+      <h1>Aplikacja do analizy obrazu dna oka pod kątem<br>występowania retinopatii cukrzycowej</h1>
+    </section>
+
+    <section class="features">
+      <h2>Funkcjonalności:</h2>
+      <ul>
+        <li>🔹 Dodanie zdjęcia do analizy</li>
+        <li>🔹 Automatyczne wykrycie oznak retinopatii cukrzycowej</li>
+        <li>🔹 Podświetlenie obszarów ryzyka na obrazie</li>
+        <li>🔹 Możliwość zapisania wyniku w formacie PDF</li>
+        <li>🔹 Historia badań i porównywanie wyników</li>
+      </ul>
+    </section>
+
+    <section class="instructions">
+      <h2>Jak to działa?</h2>
+        <br><strong>1)  Zaloguj się lub zarejestruj się</strong> – załóż konto lub zaloguj się, by mieć dostęp do historii analiz.</br>
+        <br><strong>2) Dodaj zdjęcie do analizy</strong> – wgraj zdjęcie dna oka do analizy.</br>
+       <br> <strong>3) Sprawdź wynik analizy</strong> – aplikacja sprawdzi, czy występują objawy retinopatii.</br>
+       <br> <strong>4) Zapisz raport</strong> – wynik i podświetlone obszary ryzyka możesz zapisać w PDF.</br>
+       <br> <strong>5) Porównaj wyniki</strong> – porównuj wyniki z wcześniejszymi badaniami.</br>
+
+    </section>
+  </main>
+<div class="blur-overlay" id="blurOverlay" onclick="toggleMenu()"></div>
+
+ <script>
+
+    function toggleMenu() {
+  const menu = document.getElementById('menu');
+  const blurOverlay = document.getElementById('blurOverlay');
+  const icon = document.getElementById('menuIcon');
+
+  if (menu.classList.contains('active')) {
+    menu.classList.remove('active');
+    blurOverlay.classList.remove('active');
+    icon.style.display = 'block';
+  } else {
+    menu.classList.add('active');
+    blurOverlay.classList.add('active');
+    icon.style.display = 'hidden';
+  }
+}
+
+    </script>
+      
+</body>
+</html>
+     

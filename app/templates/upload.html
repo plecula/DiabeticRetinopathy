@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rethynopathy analizys</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+
+</head>
+<body>
+ <header class="main-header">
+  <img id="menuIcon" onclick="toggleMenu()" src="{{ url_for('static', filename='IMG/burger.svg') }}" alt="menu" class="icon">
+
+  <div class="header-buttons">
+    <img src="{{ url_for('static', filename='IMG/account.svg') }}" alt="Logo konta" class="logo-icon">
+    <button class="btn">Zaloguj się</button>
+    <button class="btn btn-outline">Zarejestruj się</button>
+  </div>
+
+</header>
+
+<main class="upload-section">
+  <form class="upload-box" action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
+<label for="image-upload" class="upload-area">
+   <img id="uploadIcon" src="{{ url_for('static', filename='IMG/upload.svg') }}"  alt="Upload" class="upload-icon">
+   <input type="file" name="file" id="image-upload" accept="image/*" hidden>
+   <img id="preview-image" style="display: none; max-width: 100%; max-height: 100%; object-fit: contain;" />
+</label>
+    <button type="submit" class="button-login">DODAJ ZDJĘCIE</button>
+    <button type="submit" class="button-check">SPRAWDŹ WYNIKI</button>
+
+
+  </form>
+</main>
+
+<div class="menu-overlay" id="menu">
+    <div class="menu-content">
+      <div class="menu-close" onclick="toggleMenu()">&times;</div>
+        <a href="/">STRONA GŁÓWNA</a>
+        <a href="account.html">MOJE KONTO</a>
+        <a href="login.html">ZALOGUJ SIĘ</a>
+          </div>
+  </div>
+
+
+<div class="blur-overlay" id="blurOverlay" onclick="toggleMenu()"></div>
+
+
+
+ <script>
+
+    function toggleMenu() {
+  const menu = document.getElementById('menu');
+  const blurOverlay = document.getElementById('blurOverlay');
+  const icon = document.getElementById('menuIcon');
+
+  if (menu.classList.contains('active')) {
+    menu.classList.remove('active');
+    blurOverlay.classList.remove('active');
+    icon.style.display = 'block';
+  } else {
+    menu.classList.add('active');
+    blurOverlay.classList.add('active');
+    icon.style.display = 'hidden';
+  }
+}
+
+    </script>
+   
+<script>
+ document.getElementById('image-upload').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  const image = document.getElementById('preview-image');
+  const uploadIcon = document.getElementById('uploadIcon');
+
+  if (file && file.type.startsWith('image/')) {
+    const fileURL = URL.createObjectURL(file);
+    image.src = fileURL;
+    image.style.display = 'block';
+    uploadIcon.style.display = 'none';
+  } else {
+    // jeśli plik jest nie-obrazkiem lub brak pliku, ukryj podgląd i pokaż ikonę
+    image.style.display = 'none';
+    uploadIcon.style.display = 'block';
+    if(file) alert('Wybierz plik graficzny (zdjęcie)');
+  }
+});
+
+  </script>
+
+  
+
+  </body>
+</html>
