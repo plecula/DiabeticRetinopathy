@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logowanie</title>
+  <title>Rejestracja</title>
 
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -36,9 +36,9 @@
 
 <main class="upload-section">
   <div class="upload-card">
-    <h1>Logowanie</h1>
+    <h1>Rejestracja</h1>
     <p class="upload-subtitle">
-      Zaloguj się, aby zapisać swoje wyniki i mieć dostęp do historii analiz.
+      Utwórz konto, aby zapisywać wyniki analiz i wracać do historii badań.
     </p>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -53,22 +53,31 @@
       {% endif %}
     {% endwith %}
 
-    <form class="upload-box" action="{{ url_for('login') }}" method="POST">
-      <label class="upload-text" style="align-self:flex-start;">Adres e-mail</label>
-      <input type="email" name="email" required
-             style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid #d1d5db; font-family:inherit;">
+<form class="upload-box" action="{{ url_for('register') }}" method="POST">
+  <label class="upload-text" style="align-self:flex-start;">Imię</label>
+  <input type="text" name="name" required
+         style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid #d1d5db; font-family:inherit;">
 
-      <label class="upload-text" style="align-self:flex-start; margin-top:8px;">Hasło</label>
-      <input type="password" name="password" required
-             style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid #d1d5db; font-family:inherit;">
+  <label class="upload-text" style="align-self:flex-start; margin-top:8px;">Adres e-mail</label>
+  <input type="email" name="email" required
+         style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid #d1d5db; font-family:inherit;">
 
-      <div class="upload-buttons" style="margin-top:16px; justify-content:flex-start;">
-        <button type="submit" class="button-login">Zaloguj się</button>
-        <a href="{{ url_for('register') }}" class="button-check" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
-          Załóż konto
-        </a>
-      </div>
-    </form>
+  <label class="upload-text" style="align-self:flex-start; margin-top:8px;">Hasło</label>
+  <input type="password" name="password" required
+         style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid #d1d5db; font-family:inherit;">
+
+  <label class="upload-text" style="align-self:flex-start; margin-top:8px;">Powtórz hasło</label>
+  <input type="password" name="password2" required
+         style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid #d1d5db; font-family:inherit;">
+
+  <div class="upload-buttons" style="margin-top:16px; justify-content:flex-start;">
+    <button type="submit" class="button-login">Załóż konto</button>
+    <a href="{{ url_for('login') }}" class="button-check" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
+      Mam już konto
+    </a>
+  </div>
+</form>
+
   </div>
 </main>
 

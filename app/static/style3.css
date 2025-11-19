@@ -9,15 +9,15 @@
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
-  background: #f7f9fc; /* czysty medyczny background */
-  color: #1f2937;
+  background: #f7f9fc;
+  color: #111827;
 }
 
 main {
-  padding: 104px 16px 56px; /* trochę więcej miejsca przez wyższy header */
+  padding: 104px 16px 56px;
 }
 
-/* ===== HEADER / NAVBAR ===== */
+/* ===== HEADER / NAVBAR (spójny z innymi) ===== */
 
 .main-header {
   position: fixed;
@@ -60,7 +60,7 @@ main {
   padding: 6px;
 }
 
-/* ===== PRZYCISKI ===== */
+/* Przyciski */
 
 .btn {
   border: none;
@@ -98,7 +98,7 @@ main {
   box-shadow: 0 6px 16px rgba(13, 110, 253, 0.2);
 }
 
-/* ===== MENU BURGER / OVERLAY ===== */
+/* ===== MENU BURGER ===== */
 
 .menu-overlay {
   position: fixed;
@@ -177,223 +177,209 @@ main {
   pointer-events: auto;
 }
 
-/* ===== STRONA UPLOAD ===== */
+/* ===== SEKCJA KONTA ===== */
 
-.upload-section {
-  min-height: calc(100vh - 96px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.upload-card {
-  width: 100%;
-  max-width: 720px;
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 28px 24px 28px;
-  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.12);
-}
-
-.upload-card h1 {
-  margin: 0 0 8px;
-  font-size: 1.6rem;
-  font-weight: 600;
-}
-
-.upload-subtitle {
-  margin: 0 0 20px;
-  font-size: 0.95rem;
-  color: #6b7280;
-}
-
-.upload-box {
+.account-section {
+  max-width: 1100px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-/* Pole uploadu */
+/* Karta informacji o użytkowniku */
 
-.upload-area {
-  border-radius: 18px;
-  border: 1px dashed #9ca3af;
-  background: #f9fafb;
-  padding: 24px 16px;
+.account-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px 24px 18px;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.06);
+}
+
+.account-header {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
 }
 
-.upload-area:hover {
-  border-color: #0d6efd;
-  background: #f3f4ff;
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
-  transform: translateY(-2px);
-}
-
-.upload-icon {
-  width: 52px;
-  margin-bottom: 10px;
-}
-
-.upload-text {
+.account-header h1 {
   margin: 0;
-  font-size: 0.95rem;
-  color: #4b5563;
+  font-size: 1.6rem;
+  font-weight: 600;
 }
 
-.upload-text span {
-  font-size: 0.82rem;
+.account-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
   color: #6b7280;
 }
 
-/* Podgląd obrazka */
-
-.preview-image {
-  display: none;
-  max-width: 100%;
-  max-height: 260px;
-  object-fit: contain;
-  border-radius: 14px;
-  margin-top: 8px;
-}
-
-/* Przyciski akcji */
-
-.upload-buttons {
+.account-user {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
-  justify-content: flex-end;
 }
 
-.button-login,
-.button-check {
+.avatar-circle {
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
-  padding: 9px 20px;
-  font-size: 0.92rem;
+  background: #e0f2fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
+.account-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.user-email {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* ===== HISTORIA BADAŃ ===== */
+
+.history-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 22px 24px 24px;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.06);
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.history-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.history-subtitle {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+  flex: 1 1 auto;
+}
+
+.btn-primary-small {
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.86rem;
   font-weight: 500;
   border: none;
   cursor: pointer;
+  background: #0d6efd;
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 8px 16px rgba(13, 110, 253, 0.3);
+  white-space: nowrap;
   transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.button-login {
-  background: #0d6efd;
-  color: #ffffff;
-  box-shadow: 0 8px 16px rgba(13, 110, 253, 0.3);
-}
-
-.button-login:hover {
+.btn-primary-small:hover {
   background: #0b5ed7;
   transform: translateY(-1px);
   box-shadow: 0 10px 22px rgba(13, 110, 253, 0.4);
 }
 
-.button-check {
-  background: #f3f4ff;
-  color: #0f172a;
-  border: 1px solid #cbd5f5;
+/* Tabela */
+
+.history-table-wrapper {
+  margin-top: 16px;
+  overflow-x: auto;
 }
 
-.button-check:hover {
-  background: #e5e7ff;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(148, 163, 184, 0.45);
-}
-
-/* ===== TRYB WYNIKU ANALIZY ===== */
-
-.upload-card.result-mode {
-  text-align: left;
-}
-
-.result-layout {
-  max-width: 760px;
+.history-table {
   width: 100%;
-  margin: 0 auto;
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
+  border-collapse: collapse;
+  font-size: 0.9rem;
 }
 
-.result-block {
-  flex: 1 1 260px;
-}
-
-.result-image {
-  max-width: 360px !important;  /* wymusza faktyczny rozmiar */
-  width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  border-radius: 12px;
-  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.25);
-}
-
-/* tekst wyniku */
-.result-text {
-  margin: 8px 0 0;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-/* przyciski pod wynikiem */
-.result-actions {
-  margin-top: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-/* przycisk PDF */
-.button-outline {
-  border-radius: 999px;
-  padding: 9px 20px;
-  font-size: 0.92rem;
-  font-weight: 500;
-  border: 1px solid #d1d5db;
-  background: #ffffff;
-  color: #111827;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-}
-
-.button-outline:hover {
+.history-table thead {
   background: #f3f4f6;
-  box-shadow: 0 8px 18px rgba(148, 163, 184, 0.45);
-  transform: translateY(-1px);
 }
 
-/* żeby .button-login działał jako <a> */
-.link-button {
-  text-decoration: none;
+.history-table th,
+.history-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.history-table th {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #4b5563;
+}
+
+.history-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+/* Wyniki – badge */
+
+.result-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
-/* wyniki / błędy ogólnie */
-
-.result-block h2 {
-  margin: 0 0 6px;
-  font-size: 1.05rem;
+.result-ok {
+  background: #ecfdf3;
+  color: #15803d;
 }
 
-.error-text {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #dc2626;
+.result-risk {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+/* Link do PDF */
+
+.link-pdf {
+  font-size: 0.86rem;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.link-pdf:hover {
+  text-decoration: underline;
+}
+
+.no-pdf {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* Pusty stan */
+
+.history-empty {
+  margin-top: 14px;
+  font-size: 0.9rem;
+  color: #6b7280;
 }
 
 /* ===== FOOTER ===== */
@@ -443,12 +429,12 @@ main {
 /* ===== RESPONSYWNOŚĆ ===== */
 
 @media (max-width: 768px) {
-  .result-layout {
-    flex-direction: column;
+  .account-header {
+    align-items: flex-start;
   }
 
-  .result-image {
-    margin: 0 auto;
+  .history-header {
+    align-items: flex-start;
   }
 }
 
@@ -464,19 +450,6 @@ main {
     padding: 0 16px;
   }
 
-  .upload-card {
-    padding: 22px 18px 22px;
-    border-radius: 20px;
-  }
-
-  .upload-card h1 {
-    font-size: 1.4rem;
-  }
-
-  .upload-buttons {
-    justify-content: center;
-  }
-
   .header-buttons .btn {
     padding-inline: 12px;
     font-size: 0.8rem;
@@ -484,5 +457,11 @@ main {
 
   .logo-icon {
     display: none;
+  }
+
+  .account-card,
+  .history-card {
+    border-radius: 20px;
+    padding-inline: 18px;
   }
 }

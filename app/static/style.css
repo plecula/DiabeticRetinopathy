@@ -1,47 +1,50 @@
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #fefefc;
-  color: #333;
+/* ===== RESET & OGÓLNE ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-header {
-  background: white;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  justify-content: space-around;
+body {
+  margin: 0;
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f7fb;
+  color: #111827;
 }
+
+main {
+  padding: 104px 16px 56px;  /* więcej miejsca od góry przez wyższy header */
+}
+
+
+/* ===== HEADER / NAVBAR ===== */
 
 .main-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  height: 140px;
+  left: 0;
+  right: 0;
+  height: 76px;                 /* było 64 – trochę wyżej */
+  padding: 0 40px;              /* więcej miejsca po bokach */
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #fdfbe6;
-  border-bottom: 1px solid #80808069 ;
-  width: 100%;
-  box-sizing: border-box;
-  z-index: 800; 
-  
+  justify-content: space-between;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  z-index: 1000;
 }
 
 
-/* Ikona burgera */
 .icon {
-  width: 70px;
-  height: 70px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
-.logo-icon {
-  width: 80px;
-  height: 80px;
+.icon:hover {
+  transform: scale(1.06);
+  opacity: 0.8;
 }
 
 .header-buttons {
@@ -50,194 +53,313 @@ header {
   gap: 12px;
 }
 
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #e7f1ff;
+  padding: 6px;
+}
+
+/* ===== PRZYCISKI ===== */
 
 .btn {
-  padding: 8px 12px;
   border: none;
-  background-color: #f6f3d7;
-  border-radius: 8px;
-  cursor: pointer;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.9rem;
   font-weight: 500;
-}
-
-.btn-outline {
-  border: 1px solid #ccc;
-  background-color: #f6f3d7;
-}
-
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo img {
-  width: 40px;
-  height: 40px;
-}
-
-
-.logo span {
-  font-size: 1.4rem;
-  font-weight: bold;
-}
-
-.logo .blue {
-  color: #3871b8;
-}
-
-.header-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.btn {
-  background-color: #3871b8;
-  color: white;
-  border: none;
-  padding: 16px 25px;
   cursor: pointer;
-  border-radius: 10px;
-  font-size: 20px;
+  background: #0d6efd;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 8px 16px rgba(13, 110, 253, 0.3);
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: #0b5ed7;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(13, 110, 253, 0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
 }
 
 .btn-outline {
-  background-color: white;
-  color: #3871b8;
-  border: 1px solid #3871b8;
+  background: transparent;
+  border: 1px solid #0d6efd;
+  color: #0d6efd;
+  box-shadow: none;
 }
 
-main {
-  padding: 30px 20px;
+.btn-outline:hover {
+  background: #e7f1ff;
+  box-shadow: 0 6px 16px rgba(13, 110, 253, 0.2);
 }
 
-.hero h1 {
-  text-align: center;
-  background: #fffbdc;
-  padding: 20px;
-  border-radius: 12px;
-  font-size: 2.7rem;
-  line-height: 1.6;
-}
-
-.features {
-  margin-top: 30px;
-  background: #f5f5f5;
-  padding: 20px;
-  border-radius: 12px;
-  padding-left: 40px;
-    font-size: 1.8rem;
-    border-left: #333;
-
-}
-.instructions {
-  margin-top: 30px;
-  background: #f5f5f5;
-  padding: 20px;
-  border-radius: 12px;
-    padding-left: 40px;
-      font-size: 1.8rem;
-
-
-}
-
-.features ul {
-  list-style: none;
-  padding-left: 0;
-  font-size: 1.8rem;
-}
-
-.features li {
-  margin-bottom: 8px;
-    font-size: 1.8rem;
-
-}
-
-.instructions ol {
-  padding-left: 20px;
-    font-size: 1.8rem;
-
-}
-
-.menu-overlay.active {
-  transform: translateX(0); /* pojawia się na ekran */
-
-}
+/* ===== MENU BURGER / OVERLAY ===== */
 
 .menu-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 60%;               /* stała szerokość */
-  height: 100%;
-  background: #fffbdcc8;
-  overflow-x: hidden;
-  transition: transform 0.5s ease;
-  transform: translateX(-100%); /* ukryte z lewej */
-  z-index: 1000;
-  padding-top: 100px;       /* przesunięcie menu-content */
-  box-sizing: border-box;
-
+  height: 100vh;
+  width: 260px;
+  background: #ffffff;
+  box-shadow: 4px 0 18px rgba(15, 23, 42, 0.18);
+  transform: translateX(-100%);
+  transition: transform 0.22s ease-out;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
 }
 
+.menu-overlay.active {
+  transform: translateX(0);
+}
+
+.menu-content {
+  padding: 80px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
 
 .menu-content a {
- display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 45px 0;
-  font-size: 2.5rem;
-  color: rgb(0, 0, 0);
-  background-color: #c5c58c;
   text-decoration: none;
-  padding: 50px 15px;
-  border-radius: 8px;
-  font-weight: 700;
-  
-  opacity: 0;
-  transform: translateX(-20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  font-weight: 500;
+  color: #111827;
+  letter-spacing: 0.02em;
+  font-size: 0.95rem;
+  position: relative;
 }
 
-.menu-overlay.active .menu-content a {
-  opacity: 1;
-  transform: translateX(0);
-  transition-delay: 0.2s; /* opcjonalnie można dodać delay dla efektu */
+.menu-content a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0d6efd, #22c55e);
+  transition: width 0.18s ease;
+}
+
+.menu-content a:hover::after {
+  width: 100%;
 }
 
 .menu-close {
   position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 80px;
-  color: #c5c58c;
+  top: 16px;
+  right: 18px;
+  font-size: 1.5rem;
   cursor: pointer;
-  transition: color 0.3s;
+  color: #6b7280;
 }
 
-.menu-close:hover {
-  color: #ffffff;
-}
-
-
+/* Tło za menu */
 .blur-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  backdrop-filter: blur(6px); 
-  background-color: rgba(0,0,0,0.2);
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(2px);
   opacity: 0;
-  pointer-events: none; 
-  transition: opacity 0.3s ease;
-  z-index: 900; 
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+  z-index: 1100;
 }
 
 .blur-overlay.active {
   opacity: 1;
-  pointer-events: auto; 
+  pointer-events: auto;
 }
 
+/* ===== SEKCJA HERO ===== */
+
+.hero {
+    max-width: 1100px;
+    margin: 0 auto 32px;
+    padding: 32px 24px;
+    background: #ffffff; 
+    border-radius: 24px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw + 0.8rem, 2.3rem);
+  line-height: 1.35;
+  font-weight: 600;
+  text-align: center;
+  color: #111827;
+}
+.hero-subtitle {
+  margin-top: 12px;
+  font-size: 0.98rem;
+  color: #6b7280;
+  max-width: 800px;
+}
+.features h3 {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+.features ul li {
+  list-style: none;
+  padding-left: 0;
+}
+
+
+/* ===== FUNKCJONALNOŚCI ===== */
+
+.features {
+  max-width: 1100px;
+  margin: 0 auto 24px;
+  padding: 24px 24px 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
+}
+
+.features h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.98rem;
+  color: #4b5563;
+  padding: 6px 0;
+}
+
+.features li::before {
+  content: "◆";
+  font-size: 0.6rem;
+  color: #0d6efd;
+  margin-top: 5px;
+}
+
+/* ===== JAK TO DZIAŁA ===== */
+
+.instructions {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #f9fafb;
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.04);
+}
+
+.instructions h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.instructions strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.instructions br {
+  line-height: 1.4;
+}
+
+
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-circle-header {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.greeting-text {
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+/* ===== RESPONSYWNOŚĆ ===== */
+
+@media (max-width: 600px) {
+  .main-header {
+    padding: 0 16px;
+  }
+
+  .hero,
+  .features,
+  .instructions {
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .header-buttons .btn {
+    padding-inline: 12px;
+    font-size: 0.8rem;
+  }
+
+  .logo-icon {
+    display: none; /* trochę mniej ciasno na małych ekranach */
+  }
+}
+.main-footer {
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+  padding: 14px 24px;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 

@@ -3,93 +3,173 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rethynopathy analizys</title>
+  <title>Dodaj zdjęcie do analizy</title>
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
 
+  <!-- Ta sama czcionka co na index -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
 </head>
 <body>
- <header class="main-header">
+
+<header class="main-header">
   <img id="menuIcon" onclick="toggleMenu()" src="{{ url_for('static', filename='IMG/burger.svg') }}" alt="menu" class="icon">
 
   <div class="header-buttons">
-    <img src="{{ url_for('static', filename='IMG/account.svg') }}" alt="Logo konta" class="logo-icon">
-    <button class="btn">Zaloguj się</button>
-    <button class="btn btn-outline">Zarejestruj się</button>
+    {% if current_user.is_authenticated %}
+      <div class="user-greeting">
+        <div class="avatar-circle-header">
+          {{ (current_user.name or current_user.email)[0]|upper }}
+        </div>
+        <span class="greeting-text">
+          Cześć, {{ current_user.name or current_user.email }}!
+        </span>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline">Wyloguj</a>
+      </div>
+    {% else %}
+      <img src="{{ url_for('static', filename='IMG/account.svg') }}" alt="Logo konta" class="logo-icon">
+      <a href="{{ url_for('login') }}" class="btn">Zaloguj się</a>
+      <a href="{{ url_for('register') }}" class="btn btn-outline">Zarejestruj się</a>
+    {% endif %}
   </div>
-
 </header>
 
+
 <main class="upload-section">
-  <form class="upload-box" action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
-<label for="image-upload" class="upload-area">
-   <img id="uploadIcon" src="{{ url_for('static', filename='IMG/upload.svg') }}"  alt="Upload" class="upload-icon">
-   <input type="file" name="file" id="image-upload" accept="image/*" hidden>
-   <img id="preview-image" style="display: none; max-width: 100%; max-height: 100%; object-fit: contain;" />
-</label>
-    <button type="submit" class="button-login">DODAJ ZDJĘCIE</button>
-    <button type="submit" class="button-check">SPRAWDŹ WYNIKI</button>
+ <div class="upload-card {% if result %}result-mode{% endif %}">
 
+    {% if not result %}
+        <h1>Dodaj zdjęcie do analizy</h1>
+        <p class="upload-subtitle">
+          Wgraj zdjęcie dna oka, a system przygotuje je do analizy pod kątem retinopatii cukrzycowej.
+        </p>
+    {% else %}
+        <h1>Wynik analizy</h1>
+        <p class="upload-subtitle">
+          Poniżej znajduje się wynik analizy zdjęcia dna oka.
+        </p>
+    {% endif %}
+    {# ------------- KROK 1: panel dodawania zdjęcia (tylko, gdy nie ma jeszcze wyniku) ------------- #}
+    {% if not result %}
+    <form class="upload-box" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+      <label for="image-upload" class="upload-area">
+        <img id="uploadIcon"
+             src="{{ url_for('static', filename='IMG/upload.svg') }}"
+             alt="Upload" class="upload-icon">
+        <p class="upload-text">
+          Kliknij, aby wybrać zdjęcie<br>
+          <span>lub przeciągnij je tutaj</span>
+        </p>
+        <input type="file" name="file" id="image-upload" accept="image/*" hidden>
+        <img id="preview-image" class="preview-image"/>
+      </label>
 
-  </form>
+      <div class="upload-buttons">
+        <button type="submit" name="action" value="upload" class="button-login">Dodaj zdjęcie</button>
+        <button type="submit" name="action" value="check" class="button-check">Sprawdź wyniki</button>
+      </div>
+    </form>
+    {% endif %}
+
+    {# ------------- KROK 2: widok po analizie ------------- #}
+{% if image_url or result %}
+  <div class="result-layout">
+    {% if image_url %}
+      <div class="result-block">
+        <h2>Przesłane zdjęcie:</h2>
+        <img src="{{ image_url }}" class="result-image">
+      </div>
+    {% endif %}
+
+    {% if result %}
+      <div class="result-block">
+        <h2>Wynik analizy</h2>
+        <p class="result-text">{{ result }}</p>
+          <div class="result-actions">
+            <a href="{{ url_for('upload') }}" class="button-login link-button">
+              Dodaj nowe zdjęcie
+            </a>
+          </div>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+  </div>
 </main>
 
-<div class="menu-overlay" id="menu">
-    <div class="menu-content">
-      <div class="menu-close" onclick="toggleMenu()">&times;</div>
-        <a href="/">STRONA GŁÓWNA</a>
-        <a href="account.html">MOJE KONTO</a>
-        <a href="login.html">ZALOGUJ SIĘ</a>
-          </div>
-  </div>
 
+<!-- MENU BURGER -->
+<div class="menu-overlay" id="menu">
+<div class="menu-content">
+  <div class="menu-close" onclick="toggleMenu()">&times;</div>
+  <a href="{{ url_for('index') }}">STRONA GŁÓWNA</a>
+  <a href="{{ url_for('upload') }}">DODAJ ZDJĘCIE</a>
+  <a href="{{ url_for('account') }}">MOJE KONTO</a>
+
+  {% if current_user.is_authenticated %}
+    <a href="{{ url_for('logout') }}">WYLOGUJ</a>
+  {% else %}
+    <a href="{{ url_for('login') }}">ZALOGUJ SIĘ</a>
+  {% endif %}
+</div>
+</div>
 
 <div class="blur-overlay" id="blurOverlay" onclick="toggleMenu()"></div>
 
-
-
- <script>
-
-    function toggleMenu() {
-  const menu = document.getElementById('menu');
-  const blurOverlay = document.getElementById('blurOverlay');
-  const icon = document.getElementById('menuIcon');
-
-  if (menu.classList.contains('active')) {
-    menu.classList.remove('active');
-    blurOverlay.classList.remove('active');
-    icon.style.display = 'block';
-  } else {
-    menu.classList.add('active');
-    blurOverlay.classList.add('active');
-    icon.style.display = 'hidden';
-  }
-}
-
-    </script>
-   
 <script>
- document.getElementById('image-upload').addEventListener('change', function(event) {
-  const file = event.target.files[0];
-  const image = document.getElementById('preview-image');
-  const uploadIcon = document.getElementById('uploadIcon');
+  function toggleMenu() {
+    const menu = document.getElementById('menu');
+    const blurOverlay = document.getElementById('blurOverlay');
+    const icon = document.getElementById('menuIcon');
 
-  if (file && file.type.startsWith('image/')) {
-    const fileURL = URL.createObjectURL(file);
-    image.src = fileURL;
-    image.style.display = 'block';
-    uploadIcon.style.display = 'none';
-  } else {
-    // jeśli plik jest nie-obrazkiem lub brak pliku, ukryj podgląd i pokaż ikonę
-    image.style.display = 'none';
-    uploadIcon.style.display = 'block';
-    if(file) alert('Wybierz plik graficzny (zdjęcie)');
+    const isActive = menu.classList.contains('active');
+
+    if (isActive) {
+      menu.classList.remove('active');
+      blurOverlay.classList.remove('active');
+      icon.style.opacity = '1';
+    } else {
+      menu.classList.add('active');
+      blurOverlay.classList.add('active');
+      icon.style.opacity = '0.6';
+    }
   }
-});
 
-  </script>
+  // Podgląd zdjęcia – jedna, czysta wersja
+  const input = document.getElementById('image-upload');
+  const preview = document.getElementById('preview-image');
+  const uploadIcon = document.getElementById('uploadIcon');
+  const uploadText = document.querySelector('.upload-text');
 
-  
+  input.addEventListener('change', function () {
+    const file = this.files[0];
 
-  </body>
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.addEventListener('load', function () {
+        preview.setAttribute('src', this.result);
+        preview.style.display = 'block';
+        uploadIcon.style.display = 'none';
+        uploadText.style.display = 'none';
+      });
+      reader.readAsDataURL(file);
+    } else {
+      preview.style.display = 'none';
+      uploadIcon.style.display = 'block';
+      uploadText.style.display = 'block';
+      if (file) alert('Wybierz plik graficzny (zdjęcie).');
+    }
+  });
+</script>
+
+<footer class="main-footer">
+  <div class="footer-inner">
+    <span>© 2025 Plec Urszula</span>
+    <span> Aplikacja do analizy dna oka pod kątem występowania retynopatii cukrzycowej</span>
+  </div>
+</footer>
+
+</body>
+
 </html>

@@ -1,6 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rethynopathy analizys</title>
@@ -8,77 +11,118 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   
 
-</head>
-<body>
- <header class="main-header">
+<header class="main-header">
   <img id="menuIcon" onclick="toggleMenu()" src="{{ url_for('static', filename='IMG/burger.svg') }}" alt="menu" class="icon">
 
   <div class="header-buttons">
-    <img src="{{ url_for('static', filename='IMG/account.svg') }}" alt="Logo konta" class="logo-icon">
-    <button class="btn">Zaloguj się</button>
-    <button class="btn btn-outline">Zarejestruj się</button>
+    {% if current_user.is_authenticated %}
+      <div class="user-greeting">
+        <div class="avatar-circle-header">
+          {{ (current_user.name or current_user.email)[0]|upper }}
+        </div>
+        <span class="greeting-text">
+          Cześć, {{ current_user.name or current_user.email }}!
+        </span>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline">Wyloguj</a>
+      </div>
+    {% else %}
+      <img src="{{ url_for('static', filename='IMG/account.svg') }}" alt="Logo konta" class="logo-icon">
+      <a href="{{ url_for('login') }}" class="btn">Zaloguj się</a>
+      <a href="{{ url_for('register') }}" class="btn btn-outline">Zarejestruj się</a>
+    {% endif %}
   </div>
-
 </header>
 
 
+
 <div class="menu-overlay" id="menu">
-    <div class="menu-content">
-      <div class="menu-close" onclick="toggleMenu()">&times;</div>
-        <a href="upload.html">DODAJ ZDJĘCIE DO ANALIZY</a>
-        <a href="account.html">MOJE KONTO</a>
-        <a href="login.html">ZALOGUJ SIĘ</a>
-          </div>
+<div class="menu-content">
+  <div class="menu-close" onclick="toggleMenu()">&times;</div>
+  <a href="{{ url_for('index') }}">STRONA GŁÓWNA</a>
+  <a href="{{ url_for('upload') }}">DODAJ ZDJĘCIE</a>
+  <a href="{{ url_for('account') }}">MOJE KONTO</a>
+
+  {% if current_user.is_authenticated %}
+    <a href="{{ url_for('logout') }}">WYLOGUJ</a>
+  {% else %}
+    <a href="{{ url_for('login') }}">ZALOGUJ SIĘ</a>
+  {% endif %}
+</div>
+
   </div>
 
  <main>
-    <section class="hero">
-      <h1>Aplikacja do analizy obrazu dna oka pod kątem<br>występowania retinopatii cukrzycowej</h1>
-    </section>
+  <section class="hero">
+    <h1>Aplikacja do analizy obrazu dna oka pod kątem retinopatii cukrzycowej</h1>
+    <p class="hero-subtitle">
+      Narzędzie eksperymentalne wspomagające wstępną ocenę obecności zmian
+      charakterystycznych dla retinopatii cukrzycowej na podstawie zdjęcia dna oka.
+    </p>
+  </section>
 
-    <section class="features">
-      <h2>Funkcjonalności:</h2>
-      <ul>
-        <li>🔹 Dodanie zdjęcia do analizy</li>
-        <li>🔹 Automatyczne wykrycie oznak retinopatii cukrzycowej</li>
-        <li>🔹 Podświetlenie obszarów ryzyka na obrazie</li>
-        <li>🔹 Możliwość zapisania wyniku w formacie PDF</li>
-        <li>🔹 Historia badań i porównywanie wyników</li>
-      </ul>
-    </section>
+  <section class="features">
+    <h2>Co robi aplikacja na obecnym etapie?</h2>
+    <ul>
+      <li> Przyjmuje zdjęcie dna oka (obraz z funduskamery).</li>
+      <li> Przekazuje je do modelu sieci neuronowej.</li>
+      <li> Zwraca wynik: <strong>obecność</strong> lub <strong>brak cech retinopatii cukrzycowej</strong>.</li>
+      <li> Umożliwia wygenerowanie prostego raportu w formacie PDF.</li>
+    </ul>
 
-    <section class="instructions">
-      <h2>Jak to działa?</h2>
-        <br><strong>1)  Zaloguj się lub zarejestruj się</strong> – załóż konto lub zaloguj się, by mieć dostęp do historii analiz.</br>
-        <br><strong>2) Dodaj zdjęcie do analizy</strong> – wgraj zdjęcie dna oka do analizy.</br>
-       <br> <strong>3) Sprawdź wynik analizy</strong> – aplikacja sprawdzi, czy występują objawy retinopatii.</br>
-       <br> <strong>4) Zapisz raport</strong> – wynik i podświetlone obszary ryzyka możesz zapisać w PDF.</br>
-       <br> <strong>5) Porównaj wyniki</strong> – porównuj wyniki z wcześniejszymi badaniami.</br>
 
-    </section>
-  </main>
+  </section>
+
+  <section class="instructions">
+    <h2>Jak korzystać z aplikacji?</h2>
+    <p>
+      <strong>1. Wgraj zdjęcie dna oka</strong> – przejdź do zakładki „Dodaj zdjęcie”, wybierz plik z dysku
+      lub z urządzenia medycznego.
+    </p>
+    <p>
+      <strong>2. Uruchom analizę</strong> – model przetworzy zdjęcie i zwróci informację,
+      czy na obrazie występują cechy retinopatii cukrzycowej.
+    </p>
+    <p>
+      <strong>3. Zapisz wynik na swoim koncie!</strong> A następnie pobierz raport PDF.
+    </p>
+
+    <p style="margin-top:16px; font-size:0.9rem; color:#6b7280;">
+      Uwaga: aplikacja ma charakter pomocniczy i nie zastępuje pełnej diagnostyki okulistycznej.
+      Ostateczną decyzję diagnostyczną podejmuje lekarz.
+    </p>
+  </section>
+</main>
+
 <div class="blur-overlay" id="blurOverlay" onclick="toggleMenu()"></div>
 
- <script>
-
-    function toggleMenu() {
+<script>
+function toggleMenu() {
   const menu = document.getElementById('menu');
   const blurOverlay = document.getElementById('blurOverlay');
   const icon = document.getElementById('menuIcon');
 
-  if (menu.classList.contains('active')) {
+  const isActive = menu.classList.contains('active');
+
+  if (isActive) {
     menu.classList.remove('active');
     blurOverlay.classList.remove('active');
-    icon.style.display = 'block';
+    icon.style.opacity = '1';
   } else {
     menu.classList.add('active');
     blurOverlay.classList.add('active');
-    icon.style.display = 'hidden';
+    icon.style.opacity = '0.6';
   }
 }
+</script>
 
-    </script>
-      
+<footer class="main-footer">
+  <div class="footer-inner">
+    <span>© 2025 Plec Urszula</span>
+    <span> Aplikacja do analizy dna oka pod kątem występowania retynopatii cukrzycowej</span>
+  </div>
+</footer>
+
 </body>
+
 </html>
      

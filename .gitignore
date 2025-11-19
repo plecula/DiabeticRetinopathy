@@ -1,0 +1,4 @@
+app/key.txt
+
+app/models/*
+app/!models/.gitkeep
