@@ -6,3 +6,6 @@ __pycache__/
 *.pyc
 
 app/models/*.pth
+app/models/*.pt
+app/models/*.bin
+
