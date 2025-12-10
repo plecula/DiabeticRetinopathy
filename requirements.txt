@@ -1,1 +1,14 @@
 Flask>=2.0
+Flask-Login
+SQLAlchemy
+Werkzeug
+Jinja2
+itsdangerous
+
+torch
+torchvision
+numpy
+pillow
+scikit-learn
+
+reportlab
