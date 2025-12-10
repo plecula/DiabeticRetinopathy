@@ -6,7 +6,7 @@
 
 ## 1.  Opis Projektu
 
-Projekt polega na stworzeniu **webowej aplikacji** do automatycznej analizy obrazów dna oka w celu wykrywania **Retinopatii Cukrzycowej (Diabetic Retinopathy)**.
+Projekt polega na stworzeniu **aplikacji** do automatycznej analizy obrazów dna oka w celu wykrywania **Retinopatii Cukrzycowej (Diabetic Retinopathy)**.
 
 Aplikacja wykorzystuje model głębokiego uczenia oparty na architekturze **ConvNeXt-Tiny**, dostosowany do zadania **klasyfikacji binarnej**:
 
@@ -15,12 +15,12 @@ Aplikacja wykorzystuje model głębokiego uczenia oparty na architekturze **Conv
 | **0** | Brak cech retinopatii (Zdrowe oko) |
 | **1** | Obecność zmian chorobowych (Podejrzenie retinopatii) |
 
-### Główne Funkcjonalności:
-*  **Konto użytkownika:** Rejestracja i logowanie (indywidualne konto).
-*  **Analiza:** Przesyłanie zdjęcia dna oka i automatyczna klasyfikacja.
-*  **Wyniki:** Prezentacja wyniku wraz z prawdopodobieństwem (*score*).
-*  **Historia:** Zapis historii wykonanych analiz w bazie danych.
-*  **Raporty:** Możliwość pobrania raportu PDF z wynikiem dla wybranego badania.
+### Zakładki aplikacji:
+*  **STRONA GŁÓWNA** strona startowa z krótkim opisem aplikacji, celem systemu oraz instrukcją dla użytkownika, jak krok po kroku przeprowadzić analizę obrazu dna oka.
+*  **DODAJ ZDJĘCIE:** przesyłanie zdjęcia dna oka i automatyczna klasyfikacja pod kątem występowania choroby.
+*  **MOJE KONTO:** prezentacja wyniku wraz z prawdopodobieństwem (*score*), oraz możliwość pobrania poprzednich analiz do raportu PDF.
+*  **ZALOGUJ SIĘ/ZAREJESTRUJ SIĘ** formularze umożliwiające założenie konta oraz logowanie do aplikacji. Dostęp do analizy obrazów i historii badań wymaga zalogowania.
+*  **WYLOGUJ SIĘ** opcja umożliwiająca bezpieczne zakończenie sesji użytkownika i powrót do widoku niezalogowanego.
 
 ---
 
@@ -28,7 +28,7 @@ Aplikacja wykorzystuje model głębokiego uczenia oparty na architekturze **Conv
 
 * **Python:** Wersja 3.10 – 3.12
 * **Menedżer pakietów:** `pip`
-* **System operacyjny:** Windows lub Linux
+* **System operacyjny:** Windows
 * **Biblioteki:** Wymienione w pliku `requirements.txt`
 * **Opcjonalnie:** Zainstalowany PyTorch z obsługą CUDA (jeśli planowana jest inferencja na GPU).
 
@@ -96,15 +96,15 @@ Po uruchomieniu aplikacji użytkownik ma dostęp do następujących funkcji:
 
 ### 6.1. Rejestracja i logowanie
 
-- Nowy użytkownik może założyć konto za pomocą formularza rejestracyjnego.
+- Nowy użytkownik zakłada konto za pomocą formularza rejestracyjnego.
 
 - Po rejestracji możliwe jest logowanie do panelu użytkownika.
 
-- Dostęp do analizy obrazów oraz historii badań wymaga zalogowania.
+- Po zalogowaniu użytkownik ma dostęp do analizy obrazów oraz historii badań.
 
 ### 6.2. Analiza obrazu dna oka
 
-1. Użytkownik przechodzi do zakładki odpowiedzialnej za przesyłanie obrazu.
+1. Użytkownik przechodzi do zakładki "DODAJ ZDJĘCIE".
 
 2. Wybiera plik ze zdjęciem dna oka (format .jpg / .jpeg / .png).
 
@@ -121,7 +121,7 @@ Po uruchomieniu aplikacji użytkownik ma dostęp do następujących funkcji:
 Każdy wynik analizy jest zapisywany w lokalnej bazie danych użytkownika (SQLite).
 W historii badań prezentowane są:
 
-- Historia badań prezentuje: miniatury obrazów, wynik klasyfikacji, wartość score oraz datę analizy.
+- Historia badań prezentuje: wynik klasyfikacji, wartość score, datę oraz godzinę analizy.
 
 - Aplikacja umożliwia wygenerowanie i pobranie Raportu PDF dla wybranej analizy.
 
@@ -142,8 +142,7 @@ Raport zawiera m.in.:
 ## 7. Model klasyfikacyjny
 
 W aplikacji wykorzystano model głębokiego uczenia oparty o architekturę ConvNeXt-Tiny: sieć została przystosowana do klasyfikacji binarnej (dwie klasy wyjściowe),
- warstwa klasyfikacyjna została zastąpiona warstwą w pełni połączoną o dwóch neuronach,
- model został wytrenowany wcześniej na zbiorze obrazów dna oka (część trenowania jest opisana w pracy dyplomowej), finalne wagi modelu zostały zapisane w pliku:
+ model został wytrenowany wcześniej na zbiorze obrazów dna oka, finalne wagi modelu zostały zapisane w pliku:
 `app/models/best_convnext_tiny_binary.pth`
 
 ---
@@ -159,7 +158,7 @@ należy upewnić się, że plik z wagami modelu znajduje się w katalogu:
 
 ### 8.2. Problemy z zależnościami
 
-Jeżeli podczas uruchamiania pojawią się błędy typu ModuleNotFoundError, należy upewnić się, że wszystkie biblioteki zostały poprawnie zainstalowane za pomocą:
+Jeżeli podczas uruchamiania pojawią się błędy typu `ModuleNotFoundError`, należy upewnić się, że wszystkie biblioteki zostały poprawnie zainstalowane za pomocą:
 
 
 `pip install -r requirements.txt`
