@@ -6,7 +6,6 @@
   <title>Dodaj zdjęcie do analizy</title>
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
-  <!-- Ta sama czcionka co na index -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
@@ -50,7 +49,6 @@
           Poniżej znajduje się wynik analizy zdjęcia dna oka.
         </p>
     {% endif %}
-    {# ------------- KROK 1: panel dodawania zdjęcia (tylko, gdy nie ma jeszcze wyniku) ------------- #}
     {% if not result %}
     <form class="upload-box" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
       <label for="image-upload" class="upload-area">
@@ -72,7 +70,6 @@
     </form>
     {% endif %}
 
-    {# ------------- KROK 2: widok po analizie ------------- #}
 {% if image_url or result %}
   <div class="result-layout">
     {% if image_url %}
@@ -99,7 +96,6 @@
 </main>
 
 
-<!-- MENU BURGER -->
 <div class="menu-overlay" id="menu">
 <div class="menu-content">
   <div class="menu-close" onclick="toggleMenu()">&times;</div>
@@ -136,7 +132,6 @@
     }
   }
 
-  // Podgląd zdjęcia – jedna, czysta wersja
   const input = document.getElementById('image-upload');
   const preview = document.getElementById('preview-image');
   const uploadIcon = document.getElementById('uploadIcon');

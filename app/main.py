@@ -9,30 +9,33 @@ import torch
 import torch.nn as nn
 from torchvision import transforms, models
 from PIL import Image
-# ----------------- KONFIGURACJA APLIKACJI -----------------
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from pathlib import Path
+
 
 app = Flask(__name__)
 
-# klucz do sesji / flash – zmień na coś własnego
-with open("key.txt") as f:
+BASE_DIR = Path(__file__).resolve().parent
+key_path = BASE_DIR / "key.txt"
+
+with open(key_path) as f:
     app.config["SECRET_KEY"] = f.read().strip()
 
 
-# baza SQLite w pliku database.db obok main.py
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
-# folder na przesłane obrazy
 UPLOAD_FOLDER = os.path.join("static", "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# ----------------- MODELE BAZY -----------------
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))  # imię / nazwa użytkownika
+    name = db.Column(db.String(80)) 
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
@@ -48,8 +51,8 @@ class User(UserMixin, db.Model):
 class AnalysisRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    result = db.Column(db.Integer)  # 0 = brak cech, 1 = podejrzenie
-    score = db.Column(db.Float)  # np. prawdopodobieństwo modelu
+    result = db.Column(db.Integer)  
+    score = db.Column(db.Float) 
     image_path = db.Column(db.String(255))
     pdf_url = db.Column(db.String(255))
 
@@ -59,10 +62,9 @@ class AnalysisRecord(db.Model):
         return f"<AnalysisRecord {self.id} user={self.user_id}>"
 
 
-# ----------------- FLASK-LOGIN -----------------
 
 login_manager = LoginManager(app)
-login_manager.login_view = "login"  # niezalogowany trafi na /login
+login_manager.login_view = "login"  
 
 
 @login_manager.user_loader
@@ -70,69 +72,72 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-# ----------------- MIEJSCE NA MODEL -----------------
-# Tu możesz załadować swój model TensorFlow i napisać funkcję,
-# która zwróci (prediction, score) dla podanej ścieżki obrazu.
 
-# ----------------- Pytorch model -----------------
-
-# ----------------- PYTORCH MODEL: ConvNeXt-Tiny -----------------
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-MODEL_PATH = os.path.join("models", "best_convnext_adamw_ce_epochs30.pth")
-IMG_SIZE = (224, 224)  # jak w val_transform
+MODEL_PATH = os.path.join("models", "best_convnext_tiny_binary.pth")
+IMG_SIZE = (224, 224) 
 
 
 def build_convnext_tiny_infer():
-    # architektura TAKA SAMA jak w trenowaniu
-    model = models.convnext_tiny(weights=None)  # pretrained niepotrzebne, bo i tak wczytujemy własne wagi
+    model = models.convnext_tiny(weights=None)  
     in_features = model.classifier[2].in_features
     model.classifier[2] = nn.Linear(in_features, 2)
     return model
 
 
-# tworzymy model i ładujemy wagi ze .pth
 model = build_convnext_tiny_infer()
 state = torch.load(MODEL_PATH, map_location=DEVICE)
-# w trenowaniu było: torch.save(model.state_dict(), best_model_path)
-# więc tu ładujemy bez klucza 'model_state_dict'
+
 model.load_state_dict(state)
 model.to(DEVICE)
 model.eval()
 
-# preprocess jak val_transform
 transform = transforms.Compose([
     transforms.Resize(IMG_SIZE),
     transforms.ToTensor(),
 ])
 
 def run_model_on_image(image_path: str):
-    # 1. Wczytanie obrazu
     img = Image.open(image_path).convert("RGB")
-    x = transform(img)             # [C, H, W]
-    x = x.unsqueeze(0).to(DEVICE)  # [1, C, H, W]
+    x = transform(img)            
+    x = x.unsqueeze(0).to(DEVICE)  
 
-    # 2. Przepuszczenie przez model
     with torch.no_grad():
-        outputs = model(x)         # shape [1, 2] – logity
+        outputs = model(x)      
 
-    # 3. Softmax → prawdopodobieństwa 2 klas
     probs = torch.softmax(outputs, dim=1)[0]
-    prob_disease = probs[1].item()   # klasa 1 = "choroba", dokładnie jak w trenowaniu
+    prob_disease = probs[1].item()   
 
-    # 4. Próg decyzyjny
     threshold = 0.5
     prediction = 1 if prob_disease >= threshold else 0
 
     return prediction, float(prob_disease)
 
-# ----------------- ROUTES -----------------
+
+
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/api/predict", methods=["POST"])
+def api_predict():
+    file = request.files.get("file")
+    if not file or file.filename == "":
+        return {"error": "no file"}, 400
+
+    tmp_path = os.path.join(UPLOAD_FOLDER, "tmp_benchmark.jpeg")
+    file.save(tmp_path)
+
+    prediction, score = run_model_on_image(tmp_path)
+
+    return {
+        "prediction": int(prediction),
+        "score": float(score)
+    }, 200
 
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -147,45 +152,52 @@ def upload():
 
         if not file or file.filename == "":
             error = "Nie wybrano pliku."
-            return render_template(
-                "upload.html", image_url=None, result=None, error=error
-            )
+            return render_template("upload.html", image_url=None, result=None, error=error)
 
-        # zapis pliku
-        filename = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_") + file.filename
-        save_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(save_path)
+        try:
+            filename = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_") + file.filename
+            save_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(save_path)
+        except Exception as e:
+            error = "Błąd zapisu pliku."
+            app.logger.error(f"File save error: {e}")
+            return render_template("upload.html", image_url=None, result=None, error=error)
 
-        # ścieżka do wyświetlenia w HTML
         image_url = url_for("static", filename=f"uploads/{filename}")
 
-        # wywołanie modelu
-        prediction, score = run_model_on_image(save_path)
+        try:
+            prediction, score = run_model_on_image(save_path)
+        except Exception as e:
+            error = "Nie udało się przetworzyć obrazu."
+            app.logger.error(f"Model error: {e}")
+            return render_template("upload.html", image_url=image_url, result=None, error=error)
 
-        # tekst wyniku
-        if prediction == 1:
-            result_text = f"PODEJRZENIE RETINOPATII (p={score:.2f})"
-        else:
-            result_text = f"BRAK CECH RETINOPATII (p={score:.2f})"
-
-        # zapis rekordu w bazie
-        record = AnalysisRecord(
-            result=prediction,
-            score=score,
-            image_path=image_url,  # zapisujemy URL do późniejszego użycia
-            pdf_url=None,
-            user_id=current_user.id,
+        result_text = (
+            f"PODEJRZENIE RETINOPATII (prawdopodobieństwo={score:.2f})"
+            if prediction == 1 else
+            f"BRAK CECH RETINOPATII (prawdopodobieństwo={score:.2f})"
         )
-        db.session.add(record)
-        db.session.commit()
+
+        try:
+            record = AnalysisRecord(
+                result=prediction,
+                score=score,
+                image_path=image_url,
+                pdf_url=None,
+                user_id=current_user.id,
+            )
+            db.session.add(record)
+            db.session.commit()
+        except Exception as e:
+            error = "Nie udało się zapisać analizy w bazie danych."
+            app.logger.error(f"Database error: {e}")
 
         return render_template(
-            "upload.html", image_url=image_url, result=result_text, error=None
+            "upload.html", image_url=image_url, result=result_text, error=error
         )
 
-    return render_template(
-        "upload.html", image_url=image_url, result=result_text, error=error
-    )
+    return render_template ("upload.html", image_url=image_url, result=result_text, error=error)
+    
 
 
 @app.route("/account")
@@ -209,20 +221,18 @@ def download_all_pdf():
     )
 
     if not records:
-        # nie ma co generować
         abort(404)
 
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
 
-    # nagłówek
     p.setFont("Helvetica-Bold", 16)
     p.drawString(72, height - 72, "Zbiorczy raport analiz dna oka")
 
     p.setFont("Helvetica", 11)
-    p.drawString(72, height - 100, f"Użytkownik: {current_user.name or current_user.email}")
-    p.drawString(72, height - 116, f"Liczba badań: {len(records)}")
+    p.drawString(72, height - 100, f"Uzytkownik: {current_user.name or current_user.email}")
+    p.drawString(72, height - 116, f"Liczba badan: {len(records)}")
 
     y = height - 150
     p.setFont("Helvetica-Bold", 11)
@@ -233,7 +243,7 @@ def download_all_pdf():
     y -= 18
 
     for r in records:
-        if y < 72:  # nowa strona
+        if y < 72: 
             p.showPage()
             y = height - 72
             p.setFont("Helvetica-Bold", 11)
@@ -267,7 +277,6 @@ def download_all_pdf():
 @app.route("/record/<int:record_id>/pdf")
 @login_required
 def download_pdf(record_id):
-    # szukamy rekordu tylko bieżącego użytkownika
     record = AnalysisRecord.query.filter_by(
         id=record_id,
         user_id=current_user.id
@@ -302,7 +311,6 @@ def download_pdf(record_id):
     )
 
 
-# ----------------- AUTORYZACJA -----------------
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -364,7 +372,6 @@ def logout():
     return redirect(url_for("index"))
 
 
-# ----------------- START APLIKACJI -----------------
 
 if __name__ == "__main__":
     with app.app_context():
